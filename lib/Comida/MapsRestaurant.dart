@@ -122,7 +122,7 @@ class _MapsRestaurantState extends State<MapsRestaurant> {
                   child:
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: 240,
+                    height: 245,
                     decoration: BoxDecoration(
                         color: Colors.transparent,
                         borderRadius: BorderRadius.circular(30),

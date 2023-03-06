@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:palacasa/my_flutter_app_icons.dart';
 
 import '../Helper/color_constant.dart';
+import 'Ofertas.dart';
 
 class RestaurantScreen extends StatefulWidget {
   const RestaurantScreen({Key? key}) : super(key: key);
@@ -56,7 +57,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 235,
+                          height: 200,
                         ),
 
                         Stack(
@@ -66,7 +67,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                               child:
                               Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: 240,
+                                height: 330,
                                 decoration: BoxDecoration(
                                     color: Colors.transparent,
                                     borderRadius: BorderRadius.circular(30),
@@ -84,7 +85,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   child:Blur(
                                     blur: 10.5,
                                     colorOpacity: 0.7,
-                                    blurColor: Colors.white,
+                                    blurColor: PaLaCasaAppTheme.nearlyWhite,
                                     child: Center(),
                                   ),
                                 ),
@@ -328,7 +329,82 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                           ),
                                         ],
                                       ),
-                                    )
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                                          child: Text("Redes Sociales",
+                                            style: TextStyle(
+                                                fontFamily:PaLaCasaAppTheme.fontName,
+                                                color: PaLaCasaAppTheme.grey,
+                                                fontSize: 12.0
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Image(
+                                                image: AssetImage('assets/fitness_app/facebook.png'),
+                                                width: 22.0,
+                                              ),
+                                              Text(" mcdonalsOfficial",
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppinss',
+                                                  fontSize: 9,
+                                                  color: PaLaCasaAppTheme.grey,
+                                                ),)
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            width: 30.0,
+                                          ),
+                                          Row(
+                                            children: [
+                                              Image(
+                                                image: AssetImage('assets/fitness_app/instagram.png'),
+                                                width: 22.0,
+                                              ),
+                                              Text(" @mcdonalsOfficial",
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppinss',
+                                                  fontSize: 9,
+                                                  color: PaLaCasaAppTheme.grey,
+                                                ),)
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top:8.0),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Image(
+                                            image: AssetImage('assets/fitness_app/whatsapp.png'),
+                                            width: 25.0,
+                                          ),
+                                          Text(" +53 5 011 1801",
+                                            style: TextStyle(
+                                              fontFamily: 'Poppinss',
+                                              fontSize: 10,
+                                              color: PaLaCasaAppTheme.grey,
+                                            ),)
+                                        ],
+                                      ),
+                                    ),
+
                                   ],
                                 ),
 
@@ -344,25 +420,37 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: 50,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: PaLaCasaAppTheme.Orange,
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    boxShadow: <BoxShadow>[
-                                      BoxShadow(
-                                          color: PaLaCasaAppTheme.Orange.withOpacity(0.2)
-                                              .withOpacity(0.1),
-                                          offset: Offset(3.0, 5),
-                                          blurRadius: 3.0),
-                                    ],
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 20,left: 20,top: 15,bottom: 10),
-                                    child: Center(
-                                      child: Text('Ofertas',style: TextStyle(
-                                        fontFamily: PaLaCasaAppTheme.fontName,
-                                        color: PaLaCasaAppTheme.white,
-                                      )
+                                child: GestureDetector(
+                                  onTap: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return Ofertas();
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: PaLaCasaAppTheme.Orange,
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                            color: PaLaCasaAppTheme.Orange.withOpacity(0.2)
+                                                .withOpacity(0.1),
+                                            offset: Offset(3.0, 5),
+                                            blurRadius: 3.0),
+                                      ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 20,left: 20,top: 15,bottom: 10),
+                                      child: Center(
+                                        child: Text('Ofertas',style: TextStyle(
+                                          fontFamily: PaLaCasaAppTheme.fontName,
+                                          color: PaLaCasaAppTheme.white,
+                                        )
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -523,7 +611,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   ),
                 ),
                 Positioned(
-                  top:40,
+                  top:50,
                   left:15,
                   child: GestureDetector(
                     onTap: () =>  Navigator.pop(context),
@@ -534,7 +622,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         borderRadius: BorderRadius.circular(35),
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                              color: PaLaCasaAppTheme.nearlyBlack
+                              color: PaLaCasaAppTheme.Orange
                                   .withOpacity(0.2),
                               offset: Offset(5.0, 5.0),
                               blurRadius: 8.0),
@@ -546,7 +634,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             borderRadius: BorderRadius.circular(12),
                             child:Blur(
                               blur: 0.5,
-                              blurColor: Colors.white,
+                              colorOpacity: 1,
+                              blurColor: PaLaCasaAppTheme.Orange,
                               child: Center(),
                             ),
                           ),

@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:palacasa/Comida/Favoritos.dart';
 import 'package:palacasa/Comida/MapsRestaurant.dart';
 import 'package:palacasa/Comida/RestaurantScreen.dart';
 import 'package:palacasa/Helper/CircularImage.dart';
@@ -10,7 +11,9 @@ import 'package:palacasa/Helper/ItemsFood.dart';
 import 'package:palacasa/Helper/color_constant.dart';
 import 'package:palacasa/my_flutter_app_icons.dart';
 
+import 'Comida/TypeFood.dart';
 import 'Helper/search_form.dart';
+import 'Pedidos/Pedidos.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'models/tabIcon_data.dart';
 
@@ -25,6 +28,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
   AnimationController? animationController;
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
   bool showMap=false;
+  bool favorite=false;
   late List<ItemsFood> itemsFoods=
   [
     ItemsFood(name: 'Rápida',pathImage: 'https://cdn.icon-icons.com/icons2/2852/PNG/96/burger_fast_food_icon_181517.png', startColor: '#FA7D82', endColor: '#FFB295'),
@@ -72,53 +76,53 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
             } else {
               return Stack(
                 children: <Widget>[
-                  showMap?MapsRestaurant():SafeArea(
+                  showMap?MapsRestaurant():(favorite?Favoritos():SafeArea(
                     child:
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: ListTile(
-                              leading: IconButton(
-                                onPressed: () {},
-                                icon: SvgPicture.asset("assets/icons/paragraph.svg",color: PaLaCasaAppTheme.deepGRAY),
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              child: ListTile(
+                                leading: IconButton(
+                                  onPressed: () {},
+                                  icon: SvgPicture.asset("assets/icons/paragraph.svg",color: PaLaCasaAppTheme.deepGRAY),
+                                ),
+                                title: Text("Pa' mi Casa",style: TextStyle(fontFamily: 'Poppinss',fontWeight: FontWeight.bold,fontSize: 18),),
                               ),
-                              title: Text("Pa' mi Casa",style: TextStyle(fontFamily: 'Poppinss',fontWeight: FontWeight.bold,fontSize: 18),),
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8,left: 16,right: 16),
+                              child: Text(
+                                "Busca",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4!
+                                    .copyWith(fontFamily:'Poppinss',fontWeight: FontWeight.w500, color: PaLaCasaAppTheme.grey,fontSize: 30),
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8,left: 16,right: 16),
-                            child: Text(
-                              "Busca",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4!
-                                  .copyWith(fontFamily:'Poppinss',fontWeight: FontWeight.w500, color: PaLaCasaAppTheme.grey,fontSize: 30),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16,right: 16),
+                              child: Text(
+                                "los mejores Restaurantes para tí",
+                                style: TextStyle(fontFamily:'Poppinsr',fontSize: 15, color: PaLaCasaAppTheme.grey),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16,right: 16),
-                            child: Text(
-                              "los mejores Restaurantes para tí",
-                              style: TextStyle(fontFamily:'Poppinsr',fontSize: 15, color: PaLaCasaAppTheme.grey),
-                            ),
-                          ),
 
 
 
-                        ],
-                      ),
-                    ],
-                  ),
-                  ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )),
                   showMap?Positioned(
                     top: 50,
                     left: 0,
@@ -128,7 +132,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                       child: SearchForm(),
                     ),
                   ):Center(),
-                  showMap?Center(): Padding(
+                  showMap?Center():(favorite?Center():Padding(
                     padding: const EdgeInsets.only(top: 130.0),
                     child: SafeArea(
                       child: SingleChildScrollView(
@@ -154,139 +158,163 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                                     itemBuilder: (context, index) {
                                       return SizedBox(
                                         width: 130,
-                                        child: Stack(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 32, left: 8, right: 8, bottom: 16),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  boxShadow: <BoxShadow>[
-                                                    BoxShadow(
-                                                        color: HexColor(itemsFoods[index].endColor)
-                                                            .withOpacity(0.6),
-                                                        offset: const Offset(1.1, 4.0),
-                                                        blurRadius: 8.0),
-                                                  ],
-                                                  gradient: LinearGradient(
-                                                    colors: <HexColor>[
-                                                      HexColor(itemsFoods[index].startColor),
-                                                      HexColor(itemsFoods[index].endColor),
+                                        child: GestureDetector(
+                                          onTap: (){
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return TypeFood();
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          child: Stack(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 32, left: 8, right: 8, bottom: 16),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    boxShadow: <BoxShadow>[
+                                                      BoxShadow(
+                                                          color: HexColor(itemsFoods[index].endColor)
+                                                              .withOpacity(0.6),
+                                                          offset: const Offset(1.1, 4.0),
+                                                          blurRadius: 8.0),
                                                     ],
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
+                                                    gradient: LinearGradient(
+                                                      colors: <HexColor>[
+                                                        HexColor(itemsFoods[index].startColor),
+                                                        HexColor(itemsFoods[index].endColor),
+                                                      ],
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
+                                                    ),
+                                                    borderRadius: const BorderRadius.only(
+                                                      bottomRight: Radius.circular(8.0),
+                                                      bottomLeft: Radius.circular(8.0),
+                                                      topLeft: Radius.circular(8.0),
+                                                      topRight: Radius.circular(54.0),
+                                                    ),
                                                   ),
-                                                  borderRadius: const BorderRadius.only(
-                                                    bottomRight: Radius.circular(8.0),
-                                                    bottomLeft: Radius.circular(8.0),
-                                                    topLeft: Radius.circular(8.0),
-                                                    topRight: Radius.circular(54.0),
-                                                  ),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      top: 60, left: 16, right: 16, bottom: 8),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        itemsFoods[index].name,
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                          fontFamily: PaLaCasaAppTheme.fontName,
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 12,
-                                                          letterSpacing: 0.2,
-                                                          color: PaLaCasaAppTheme.white,
+                                                  child: GestureDetector(
+                                                    onTap: (){
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return TypeFood();
+                                                          },
                                                         ),
-                                                        overflow: TextOverflow.fade,
-                                                      ),
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                          const EdgeInsets.only(top: 8, bottom: 8),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: <Widget>[
-                                                              Text(
-                                                                '',
-                                                                style: TextStyle(
-                                                                  fontFamily: PaLaCasaAppTheme.fontName,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  fontSize: 10,
-                                                                  letterSpacing: 0,
-                                                                  color: PaLaCasaAppTheme.white,
-                                                                ),
+                                                      );
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(
+                                                          top: 60, left: 16, right: 16, bottom: 8),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            itemsFoods[index].name,
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontFamily: PaLaCasaAppTheme.fontName,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 12,
+                                                              letterSpacing: 0.2,
+                                                              color: PaLaCasaAppTheme.white,
+                                                            ),
+                                                            overflow: TextOverflow.fade,
+                                                          ),
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding:
+                                                              const EdgeInsets.only(top: 8, bottom: 8),
+                                                              child: Row(
+                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: <Widget>[
+                                                                  Text(
+                                                                    '',
+                                                                    style: TextStyle(
+                                                                      fontFamily: PaLaCasaAppTheme.fontName,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      fontSize: 10,
+                                                                      letterSpacing: 0,
+                                                                      color: PaLaCasaAppTheme.white,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ],
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                          color: PaLaCasaAppTheme.nearlyWhite,
-                                                          shape: BoxShape.circle,
-                                                          boxShadow: <BoxShadow>[
-                                                            BoxShadow(
-                                                                color: PaLaCasaAppTheme.nearlyBlack
-                                                                    .withOpacity(0.4),
-                                                                offset: Offset(8.0, 8.0),
-                                                                blurRadius: 8.0),
-                                                          ],
-                                                        ),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(6.0),
-                                                          child: Icon(
-                                                            Icons.search,
-                                                            color: HexColor(itemsFoods[index].endColor),
-                                                            size: 24,
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              color: PaLaCasaAppTheme.nearlyWhite,
+                                                              shape: BoxShape.circle,
+                                                              boxShadow: <BoxShadow>[
+                                                                BoxShadow(
+                                                                    color: PaLaCasaAppTheme.nearlyBlack
+                                                                        .withOpacity(0.4),
+                                                                    offset: Offset(8.0, 8.0),
+                                                                    blurRadius: 8.0),
+                                                              ],
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(6.0),
+                                                              child: Icon(
+                                                                Icons.search,
+                                                                color: HexColor(itemsFoods[index].endColor),
+                                                                size: 24,
+                                                              ),
+                                                            ),
                                                           ),
-                                                        ),
+                                                        ],
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            Positioned(
-                                              top: 0,
-                                              left: 0,
-                                              child: Container(
-                                                width: 84,
-                                                height: 84,
-                                                decoration: BoxDecoration(
-                                                  color: PaLaCasaAppTheme.nearlyWhite.withOpacity(0.2),
-                                                  shape: BoxShape.circle,
+                                              Positioned(
+                                                top: 0,
+                                                left: 0,
+                                                child: Container(
+                                                  width: 84,
+                                                  height: 84,
+                                                  decoration: BoxDecoration(
+                                                    color: PaLaCasaAppTheme.nearlyWhite.withOpacity(0.2),
+                                                    shape: BoxShape.circle,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Positioned(
-                                              top: 0,
-                                              left: 8,
-                                              child: SizedBox(
-                                                width: 80,
-                                                height: 80,
-                                                child:ClipRRect(
-                                                  borderRadius: BorderRadius.circular(20.0),
-                                                  child:CachedNetworkImage(
-                                                      fit: BoxFit.cover,
-                                                      imageUrl: itemsFoods[index].pathImage,
-                                                      placeholder: (context, url) => CircleAvatar(
-                                                        backgroundColor: Colors.transparent,
-                                                        maxRadius: 30,
-                                                        child: CircularProgressIndicator(
-                                                          color: PaLaCasaAppTheme.grey,
+                                              Positioned(
+                                                top: 0,
+                                                left: 8,
+                                                child: SizedBox(
+                                                  width: 80,
+                                                  height: 80,
+                                                  child:ClipRRect(
+                                                    borderRadius: BorderRadius.circular(20.0),
+                                                    child:CachedNetworkImage(
+                                                        fit: BoxFit.cover,
+                                                        imageUrl: itemsFoods[index].pathImage,
+                                                        placeholder: (context, url) => CircleAvatar(
+                                                          backgroundColor: Colors.transparent,
+                                                          maxRadius: 30,
+                                                          child: CircularProgressIndicator(
+                                                            color: PaLaCasaAppTheme.grey,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      errorWidget: (context, url, error) => new Icon(Icons.image_not_supported_outlined,color: PaLaCasaAppTheme.grey,)
-                                                  ),
+                                                        errorWidget: (context, url, error) => new Icon(Icons.image_not_supported_outlined,color: PaLaCasaAppTheme.grey,)
+                                                    ),
 
+                                                  ),
                                                 ),
-                                              ),
-                                            )
-                                          ],
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       );
                                     },
@@ -747,7 +775,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                         ),
                       ),
                     ),
-                  ),
+                  )),
 
 
                   bottomBar(),
@@ -805,34 +833,43 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
           tabIconsList: tabIconsList,
           addClick: () {},
           changeIndex: (int index) {
-            if (index == 0 || index == 2) {
+            if (index == 0 ) {
               animationController?.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;
                 }
+                favorite=false;
                 showMap=false;
                 setState(() {
 
                 });
               });
-            } else if (index == 1 || index == 3) {
+            } else if (index == 1) {
               animationController?.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;
                 }
+                favorite=false;
                 showMap=true;
-               /* Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MapsRestaurant();
-                    },
-                  ),
-                );*/
+
                 setState(() {
 
                 });
               });
+            } else if (index == 2 || index == 3) {
+              showMap=false;
+              favorite=true;
+              setState(() {
+
+              });
+/*               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return Pedidos();
+                    },
+                  ),
+                );*/
             }
           },
         ),
