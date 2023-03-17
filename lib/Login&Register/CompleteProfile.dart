@@ -8,16 +8,18 @@ import '../Helper/CalendatBirthday.dart';
 import '../PaLaCasaAppHomeScreen.dart';
 import '../my_flutter_app_icons.dart';
 
-class Perfil extends StatefulWidget {
-  const Perfil({Key? key}) : super(key: key);
+class CompleteProfile extends StatefulWidget {
+  final String displayName;
+  final String urlPhoto;
+  const CompleteProfile({Key? key, required this.displayName, required this.urlPhoto}) : super(key: key);
 
   @override
-  State<Perfil> createState() => _PerfilState();
+  State<CompleteProfile> createState() => _CompleteProfileState(displayName,urlPhoto);
 }
 
-class _PerfilState extends State<Perfil> {
-  late final String displayName;
-  late final String urlPhoto;
+class _CompleteProfileState extends State<CompleteProfile> {
+  final String displayName;
+  final String urlPhoto;
   late TextEditingController _controllerFirstName = new TextEditingController();
   late TextEditingController _controllerLastName= new TextEditingController();
   late TextEditingController _controllerBirthday= new TextEditingController();
@@ -29,11 +31,11 @@ class _PerfilState extends State<Perfil> {
   DateTime endDate = DateTime.now().add(const Duration(days: 7));
   DateTime startDates = DateTime.now();
   DateTime endDates = DateTime.now().add(const Duration(days: 7));
-  bool isEditing = true;
+
+  _CompleteProfileState(this.displayName,this.urlPhoto);
 
   @override
   void initState() {
-    displayName="Ernesto Enrique Sanchez";
     _controllerFirstName.text = displayName.split(" ").first;
     _controllerLastName.text = displayName.replaceAll(_controllerFirstName.text+" ", "");
     super.initState();
@@ -50,43 +52,15 @@ class _PerfilState extends State<Perfil> {
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
-          child: isEditing?Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 35.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isEditing=!isEditing;
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0,left: 20,right: 20),
-                        decoration: BoxDecoration(
-                            color: PaLaCasaAppTheme.Orange,
-                            borderRadius: BorderRadius.circular(35.0)
-                        ),
-                        child: Text(
-                          "Editar".toUpperCase(),
-                          style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 11.0,),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               Center(
                 child: Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 10,bottom: 20),
+                      padding: const EdgeInsets.only(top: 30),
                       child: Container(
                         margin: EdgeInsets.all(5),
                         decoration: BoxDecoration(
@@ -106,159 +80,7 @@ class _PerfilState extends State<Perfil> {
                               fit: BoxFit.cover,
                               height: 120,
                               width:120,
-                              imageUrl: 'https://lh3.googleusercontent.com/a-/AFdZucozA33lWxg69XFoQrslJynDk88u5N-7rrDKefay',
-                              placeholder: (context, url) => CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                maxRadius: 30,
-                                child: CircularProgressIndicator(
-                                  color: PaLaCasaAppTheme.grey,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => new Icon(Icons.image_not_supported_outlined,color: PaLaCasaAppTheme.grey,)
-                          ),
-
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Center(child: Column(
-                children: [
-                  Text("Ernesto Enrique Sanchez Socarras",
-                    style: TextStyle(
-                        fontFamily:PaLaCasaAppTheme.fontName,
-                        color: PaLaCasaAppTheme.Gray,
-                        fontSize: 15.0
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  Text("sernestoenrique1996@gmail.com",
-                    style: TextStyle(
-                        fontFamily:PaLaCasaAppTheme.fontNameRegular,
-                        color: PaLaCasaAppTheme.Gray.withOpacity(0.5),
-                        fontSize: 13.0
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 30),
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: PaLaCasaAppTheme.Orange,
-                        maxRadius: 25,
-                        child: Icon(Icons.location_on_rounded,color: Colors.white,),
-                      ),
-                      title: Text(
-                        "Direcciones",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: PaLaCasaAppTheme.Gray,fontSize: 16.0,),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Text(
-                        "Añadir direcciones de entrega",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray,fontSize: 12.0,),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: PaLaCasaAppTheme.Orange,
-                        maxRadius: 25,
-                        child: Icon(Icons.share,color: Colors.white,),
-                      ),
-                      title: Text(
-                        "Invitar Amigo",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: PaLaCasaAppTheme.Gray,fontSize: 16.0,),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Text(
-                        "Recomienda la aplicación",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray,fontSize: 12.0,),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: PaLaCasaAppTheme.Orange,
-                        maxRadius: 25,
-                        child: Icon(Icons.power_settings_new,color: Colors.white,),
-                      ),
-                      title: Text(
-                        "Cerrar Sesión",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: PaLaCasaAppTheme.Gray,fontSize: 16.0,),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Text(
-                        "Cerrar sesión en la cuenta actual",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray,fontSize: 12.0,),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ):Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 35.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isEditing=!isEditing;
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0,left: 20,right: 20),
-                        decoration: BoxDecoration(
-                            color: PaLaCasaAppTheme.Orange,
-                            borderRadius: BorderRadius.circular(35.0)
-                        ),
-                        child: Text(
-                          "Perfil".toUpperCase(),
-                          style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 11.0,),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Center(
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Container(
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(75.0),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color: PaLaCasaAppTheme.Gray.withOpacity(0.1)
-                                    .withOpacity(0.5),
-                                offset: Offset(3.0, 5),
-                                blurRadius: 15.0),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(75.0),
-                          child:CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              height: 120,
-                              width:120,
-                              imageUrl: 'https://lh3.googleusercontent.com/a-/AFdZucozA33lWxg69XFoQrslJynDk88u5N-7rrDKefay',
+                              imageUrl: urlPhoto,
                               placeholder: (context, url) => CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 maxRadius: 30,
@@ -277,8 +99,8 @@ class _PerfilState extends State<Perfil> {
                       right: 1,
                       child: Container(
                         decoration: BoxDecoration(
-                            color: PaLaCasaAppTheme.Orange,
-                            borderRadius: BorderRadius.circular(35)
+                          color: PaLaCasaAppTheme.Orange,
+                          borderRadius: BorderRadius.circular(35)
                         ),
                         child: IconButton(onPressed: () {
 
@@ -290,7 +112,7 @@ class _PerfilState extends State<Perfil> {
               ),
               Padding(
                 padding: const EdgeInsets.only(right: 35.0,left: 35.0,top: 25.0),
-                child: Text("Editar Datos",
+                child: Text("Completar Datos",
                   style: TextStyle(
                       fontFamily:PaLaCasaAppTheme.fontName,
                       color: PaLaCasaAppTheme.Gray,
@@ -508,153 +330,150 @@ class _PerfilState extends State<Perfil> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15.0,left: 35.0,top: 8.0),
-                            child: Text("Sexo",
-                              style: TextStyle(
-                                  fontFamily:PaLaCasaAppTheme.fontName,
-                                  color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
-                                  fontSize: 14.0
-                              ),
-                              textAlign: TextAlign.left,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0,left: 35.0,top: 8.0),
+                          child: Text("Sexo",
+                            style: TextStyle(
+                                fontFamily:PaLaCasaAppTheme.fontName,
+                                color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
+                                fontSize: 14.0
                             ),
+                            textAlign: TextAlign.left,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5,left: 25),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  border: Border.all(color:PaLaCasaAppTheme.Gray.withOpacity(0.3),width: 1.0 )
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5,left: 25),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.0),
+                                border: Border.all(color:PaLaCasaAppTheme.Gray.withOpacity(0.3),width: 1.0 )
 
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 12.0,left: 12.0,top: 6,bottom: 6),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                      icon: Icon(Icons.arrow_drop_down,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
-                                      value: valueSexo,
-                                      style: TextStyle(color: Colors.black38, fontSize: 16,),
-                                      underline: Container(
-                                        height: 1,
-                                        color: PaLaCasaAppTheme.Gray.withOpacity(0.5),
-                                      ),
-                                      items: sexoItems.map(buildMenuItem).toList(),
-                                      onChanged: (value) async{
-                                        this.valueSexo = value!;
-                                        setState(() {
-                                        });
-                                      }
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 12.0,left: 12.0,top: 6,bottom: 6),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                    icon: Icon(Icons.arrow_drop_down,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
+                                    value: valueSexo,
+                                    style: TextStyle(color: Colors.black38, fontSize: 16,),
+                                    underline: Container(
+                                      height: 1,
+                                      color: PaLaCasaAppTheme.Gray.withOpacity(0.5),
+                                    ),
+                                    items: sexoItems.map(buildMenuItem).toList(),
+                                    onChanged: (value) async{
+                                      this.valueSexo = value!;
+                                      setState(() {
+                                      });
+                                    }
 
-                                  ),
                                 ),
                               ),
-
                             ),
-                          )
-                        ],)),
+
+                          ),
+                        )
+                  ],)),
                   Expanded(
                       child:
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0,left: 8),
-                            child: Text("Fecha Nacimiento",
-                              style: TextStyle(
-                                  fontFamily:PaLaCasaAppTheme.fontName,
-                                  color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
-                                  fontSize: 14.0
-                              ),
-                              textAlign: TextAlign.left,
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0,left: 8),
+                          child: Text("Fecha Nacimiento",
+                            style: TextStyle(
+                                fontFamily:PaLaCasaAppTheme.fontName,
+                                color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
+                                fontSize: 14.0
                             ),
+                            textAlign: TextAlign.left,
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              showCalendarBirthday(context: context);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 5,right: 25,left: 0),
-                              child:  TextFormField(
-                                style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
-                                cursorColor: PaLaCasaAppTheme.Orange,
-                                controller: _controllerBirthday,
-                                enabled: false,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    borderSide: BorderSide(
-                                      color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
-                                    ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showCalendarBirthday(context: context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 5,right: 25,left: 0),
+                            child:  TextFormField(
+                              style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
+                              cursorColor: PaLaCasaAppTheme.Orange,
+                              controller: _controllerBirthday,
+                              enabled: false,
+                              decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  borderSide: BorderSide(
+                                    color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
                                   ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.calendar_month,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
-                                    onPressed: null,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    borderSide: BorderSide(
-                                      color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
-                                      width: 1.0,
-                                    ),
-                                  ),
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    borderSide: BorderSide(
-                                      color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
-                                    ),
-                                  ),
-                                  focusedErrorBorder: InputBorder.none,
-                                  border: InputBorder.none,
-                                  hintText: 'DD/MM/YYYY',
-                                  hintStyle: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,color: PaLaCasaAppTheme.Gray.withOpacity(0.4),fontSize: 12),
-
                                 ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.calendar_month,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
+                                  onPressed: null,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  borderSide: BorderSide(
+                                    color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
+                                    width: 1.0,
+                                  ),
+                                ),
+                                errorBorder: InputBorder.none,
+                                disabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  borderSide: BorderSide(
+                                    color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
+                                  ),
+                                ),
+                                focusedErrorBorder: InputBorder.none,
+                                border: InputBorder.none,
+                                hintText: 'DD/MM/YYYY',
+                                hintStyle: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,color: PaLaCasaAppTheme.Gray.withOpacity(0.4),fontSize: 12),
+
                               ),
                             ),
                           ),
-                        ],))
+                        ),
+                      ],))
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 35.0,horizontal: 35.0),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 60),
-                  child: Row(
+                child: Row(
 
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: InkWell(
-                          onTap: () async {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return PaLaCasaAppHomeScreen();
-                                },
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                            decoration: BoxDecoration(
-                                color: PaLaCasaAppTheme.Orange,
-                                borderRadius: BorderRadius.circular(35.0)
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: InkWell(
+                        onTap: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return PaLaCasaAppHomeScreen();
+                              },
                             ),
-                            child: Text(
-                              "Editar".toUpperCase(),
-                              style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0,),
-                              textAlign: TextAlign.center,
-                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                          decoration: BoxDecoration(
+                              color: PaLaCasaAppTheme.Orange,
+                              borderRadius: BorderRadius.circular(35.0)
+                          ),
+                          child: Text(
+                            "Completar".toUpperCase(),
+                            style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0,),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 

@@ -9,6 +9,7 @@ import 'package:palacasa/Comida/RestaurantScreen.dart';
 import 'package:palacasa/Helper/CircularImage.dart';
 import 'package:palacasa/Helper/ItemsFood.dart';
 import 'package:palacasa/Helper/color_constant.dart';
+import 'package:palacasa/Perfil/Perfil.dart';
 import 'package:palacasa/my_flutter_app_icons.dart';
 
 import 'Comida/TypeFood.dart';
@@ -28,6 +29,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
   AnimationController? animationController;
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
   bool showMap=false;
+  bool showPerfil=false;
   bool favorite=false;
   late List<ItemsFood> itemsFoods=
   [
@@ -76,7 +78,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
             } else {
               return Stack(
                 children: <Widget>[
-                  showMap?MapsRestaurant():(favorite?Favoritos():SafeArea(
+                  showMap?MapsRestaurant():(favorite?Favoritos():(showPerfil?Perfil():SafeArea(
                     child:
                     Column(
                       children: [
@@ -122,7 +124,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                         ),
                       ],
                     ),
-                  )),
+                  ))),
                   showMap?Positioned(
                     top: 50,
                     left: 0,
@@ -132,7 +134,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                       child: SearchForm(),
                     ),
                   ):Center(),
-                  showMap?Center():(favorite?Center():Padding(
+                  showMap?Center():(favorite?Center():(showPerfil?Center():Padding(
                     padding: const EdgeInsets.only(top: 130.0),
                     child: SafeArea(
                       child: SingleChildScrollView(
@@ -324,7 +326,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                     crossAxisAlignment:CrossAxisAlignment.start,
+                                      crossAxisAlignment:CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Padding(
@@ -775,7 +777,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                         ),
                       ),
                     ),
-                  )),
+                  ))),
 
 
                   bottomBar(),
@@ -838,6 +840,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                 if (!mounted) {
                   return;
                 }
+                showPerfil=false;
                 favorite=false;
                 showMap=false;
                 setState(() {
@@ -849,6 +852,7 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
                 if (!mounted) {
                   return;
                 }
+                showPerfil=false;
                 favorite=false;
                 showMap=true;
 
@@ -856,20 +860,22 @@ class _PaLaCasaAppHomeScreenState extends State<PaLaCasaAppHomeScreen> with Tick
 
                 });
               });
-            } else if (index == 2 || index == 3) {
+            } else if (index == 2) {
+              showPerfil=false;
               showMap=false;
               favorite=true;
               setState(() {
 
               });
-/*               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return Pedidos();
-                    },
-                  ),
-                );*/
+            }else{
+              showPerfil=true;
+              showMap=false;
+              favorite=false;
+
+              setState(() {
+
+              });
+
             }
           },
         ),
