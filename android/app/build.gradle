@@ -44,15 +44,21 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-
     signingConfigs {
+        debug {
+            storeFile file('D:\\Herramientas\\debug.keystore')
+            keyAlias = 'androiddebugkey'
+        }
+    }
+
+/*    signingConfigs {
         debug {
             keyAlias 'key'
             keyPassword 'Inuyasha1996*'
             storeFile file('keystore.jks')
             storePassword 'Inuyasha1996*'
         }
-    }
+    }*/
 
     buildTypes {
         debug {

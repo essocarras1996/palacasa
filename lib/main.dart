@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:palacasa/PaLaCasaAppHomeScreen.dart';
 
+import 'LoadingDataNetwork.dart';
 import 'Login&Register/Login.dart';
 import 'Login&Register/OnBoardingPage.dart';
 
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: OnBoardingPage()//Login(),//PaLaCasaAppHomeScreen(),
+      home: LoadingDataNetwork(),//PaLaCasaAppHomeScreen(),
     );
   }
 }

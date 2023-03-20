@@ -47,5 +47,35 @@ class TabIconData {
       animationController: null,
     ),
   ];
+  static List<TabIconData> tabIconsListAdmin = <TabIconData>[
+    TabIconData(
+      imagePath: MyFlutterApp.drafting_compass,
+      selectedImagePath: 'stores',
+      index: 0,
+      isSelected: true,
+      animationController: null,
+    ),
+    TabIconData(
+      imagePath: MyFlutterApp.layer_group,
+      selectedImagePath: 'categories',
+      index: 1,
+      isSelected: false,
+      animationController: null,
+    ),
+    TabIconData(
+      imagePath: MyFlutterApp.users,
+      selectedImagePath: 'profiles',
+      index: 3,
+      isSelected: false,
+      animationController: null,
+    ),
+    TabIconData(
+      imagePath: MyFlutterApp.leaf,
+      selectedImagePath: 'stadistics',
+      index: 2,
+      isSelected: false,
+      animationController: null,
+    ),
+  ];
 }
 

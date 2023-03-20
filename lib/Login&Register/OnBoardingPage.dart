@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:palacasa/Login&Register/Login.dart';
@@ -179,4 +180,4 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       ),
     );
   }
-}
+}*/

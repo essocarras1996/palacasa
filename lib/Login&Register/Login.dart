@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:palacasa/database/PaLaCasaDB.dart';
+import 'package:palacasa/database/SessionObject.dart';
 import 'package:palacasa/jsons/CreateUserJson.dart';
 import '../Helper/color_constant.dart';
 import 'package:palacasa/my_flutter_app_icons.dart';
@@ -29,12 +32,21 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-bool loginUser= true;
+  bool loginUser= true;
+  var _controllerName = TextEditingController();
+  var _controllerEmail = TextEditingController();
+  var _controllerPassword = TextEditingController();
+  var _controllerUser = TextEditingController();
+  var _controllerPasswordLogin = TextEditingController();
+  bool showPassword = true;
+  bool showPassword1 = true;
+  bool setRequest=false;
 
   GoogleSignInAccount? _currentUser;
   String _contactText = '';
   @override
   void initState() {
+    getUserDB();
     super.initState();
   }
   @override
@@ -131,6 +143,7 @@ bool loginUser= true;
                 child:  TextFormField(
                   style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
                   cursorColor: PaLaCasaAppTheme.Orange,
+                  controller: _controllerUser,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.only(right: 5.0,left: 10.0),
@@ -183,6 +196,8 @@ bool loginUser= true;
                 child:  TextFormField(
                   style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
                   cursorColor: PaLaCasaAppTheme.Orange,
+                  controller: _controllerPasswordLogin,
+                  obscureText: showPassword,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.only(right: 5.0,left: 10.0),
@@ -210,8 +225,12 @@ bool loginUser= true;
                     suffixIcon: Padding(
                       padding: const EdgeInsets.only(right: 5.0,left: 10.0),
                       child:  IconButton(
-                        icon: Icon(Icons.visibility_off,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
-                        onPressed: null,
+                        icon: Icon(showPassword?Icons.visibility_rounded:Icons.visibility_off,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
+                        onPressed: (){
+                          setState(() {
+                            showPassword=!showPassword;
+                          });
+                        },
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -261,22 +280,23 @@ bool loginUser= true;
                       flex: 1,
                       child: InkWell(
                         onTap: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return PaLaCasaAppHomeScreen();
-                              },
-                            ),
-                          );
+                         String user = _controllerUser.text;
+                         String password =_controllerPasswordLogin.text;
+                         if(user.isEmpty||password.isEmpty){
+                           Fluttertoast.showToast(msg: 'Rellene los espacios en blanco',gravity: ToastGravity.BOTTOM,backgroundColor: Colors.grey);
+                         }else if (user.contains("@")){
+                           if(!setRequest)login(user, password);
+                         }else{
+                           Fluttertoast.showToast(msg: 'Email incorrecto',gravity: ToastGravity.BOTTOM,backgroundColor: Colors.grey);
+                         }
                         },
                         child: Container(
-                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                          padding: EdgeInsets.only(top: setRequest?14:20.0, bottom: setRequest?14:20.0),
                           decoration: BoxDecoration(
                               color: PaLaCasaAppTheme.Orange,
                               borderRadius: BorderRadius.circular(35.0)
                           ),
-                          child: Text(
+                          child: setRequest?Center(child: CircularProgressIndicator(color: PaLaCasaAppTheme.nearlyWhite,strokeWidth: 2,)):Text(
                             "Autenticar".toUpperCase(),
                             style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0,),
                             textAlign: TextAlign.center,
@@ -390,7 +410,7 @@ bool loginUser= true;
                           try{
                             photo=user!.photoUrl!;
                           }catch(a){}
-                          createUser(user!.email!,'mnbvcxzasdfghjkl',photo, user!.displayName!);
+                          register(user!.email!,'mnbvcxzasdfghjkl',photo, user!.displayName!);
                         /*} catch (error) {
                           print(error);
                         }*/
@@ -500,6 +520,7 @@ bool loginUser= true;
                 child:  TextFormField(
                   style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
                   cursorColor: PaLaCasaAppTheme.Orange,
+                  controller: _controllerName,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.only(right: 5.0,left: 10.0),
@@ -552,6 +573,7 @@ bool loginUser= true;
                 child:  TextFormField(
                   style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
                   cursorColor: PaLaCasaAppTheme.Orange,
+                  controller: _controllerEmail,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.only(right: 5.0,left: 10.0),
@@ -604,6 +626,8 @@ bool loginUser= true;
                 child:  TextFormField(
                   style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
                   cursorColor: PaLaCasaAppTheme.Orange,
+                  controller: _controllerPassword,
+                  obscureText: showPassword1,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding: const EdgeInsets.only(right: 5.0,left: 10.0),
@@ -631,8 +655,12 @@ bool loginUser= true;
                     suffixIcon: Padding(
                       padding: const EdgeInsets.only(right: 5.0,left: 10.0),
                       child:  IconButton(
-                        icon: Icon(Icons.visibility_off,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
-                        onPressed: null,
+                        icon: Icon(showPassword1?Icons.visibility_rounded:Icons.visibility_off,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
+                        onPressed: (){
+                          setState(() {
+                            showPassword1=!showPassword1;
+                          });
+                        },
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -668,6 +696,19 @@ bool loginUser= true;
                       flex: 1,
                       child: InkWell(
                         onTap: () async {
+                          String name = _controllerName.text;
+                          String email = _controllerEmail.text;
+                          String password = _controllerPassword.text;
+
+                          if(name.isEmpty||email.isEmpty||password.isEmpty){
+                            Fluttertoast.showToast(msg: 'Rellene los espacios en blanco',gravity: ToastGravity.BOTTOM,backgroundColor: Colors.grey);
+                          }else if(email.contains("@")){
+                            register(email,password,'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png', name);
+                          }
+                          else{
+                            Fluttertoast.showToast(msg: 'El email no es correcto',gravity: ToastGravity.BOTTOM,backgroundColor: Colors.grey);
+
+                          }
                         },
                         child: Container(
                           padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -729,7 +770,88 @@ bool loginUser= true;
     );
   }
 
-  createUser(String email,String password, String photo, String name) async {
+  login(String email,String password) async {
+    setState(() {
+      setRequest= true;
+    });
+    var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/login'));
+    request.fields.addAll({
+      'email': email,
+      'password': password
+    });
+
+try{
+  http.StreamedResponse response = await request.send();
+  print("Mando el request");
+  if (response.statusCode == 200) {
+    setState(() {
+      setRequest= false;
+    });
+    try{
+      String d =await response.stream.bytesToString();
+      var a = json.decode(d);
+      var userJson = createUserJson.fromJson(a);
+      SessionObject session = new SessionObject(
+          id: int.parse('${userJson.user!.id}'),
+          name: '${userJson.user!.name}',
+          lastname: '${userJson.user!.lastname}',
+          email: '${userJson.user!.email}',
+          phone: '${userJson.user!.phone}',
+          photo: '${userJson.user!.photo}',
+          id_role: '${userJson.user!.id_role}',
+          birthday: '${userJson.user!.birthday}',
+          gender: '${userJson.user!.gender}',
+          token: userJson.token!
+      );
+      await PaLaCasaDB.instance.createSession(session);
+
+      if('${userJson.user!.phone}'.length==10){
+        /*Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PaLaCasaAppHomeScreen();
+            },
+          ),
+        );*/
+      }else{
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return CompleteProfile(displayName:userJson.user!.name!,urlPhoto:userJson.user!.photo==null?'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png':userJson.user!.photo!,);
+            },
+          ),
+        );
+      }
+
+
+    }catch(e){
+      Fluttertoast.showToast(msg: e.toString(),backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+    }
+
+  }else if (response.statusCode == 401){
+    setState(() {
+      setRequest= false;
+    });
+    Fluttertoast.showToast(msg: "Credenciales no válidas",backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+    print(401);
+  } else {
+    setState(() {
+      setRequest= false;
+    });
+    Fluttertoast.showToast(msg: response.reasonPhrase!,backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+  }
+}catch(error){
+  Fluttertoast.showToast(msg: error.toString(),backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+  setState(() {
+    setRequest= false;
+  });
+}
+
+
+  }
+  register(String email,String password, String photo, String name) async {
     print("Entro al request");
     var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/register'));
     request.fields.addAll({
@@ -746,16 +868,16 @@ bool loginUser= true;
       //try{
       String d =await response.stream.bytesToString();
       var a = json.decode(d);
-        var userJson = createUserJson.fromJson(a);
-        print(userJson.user!.email!);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return CompleteProfile(displayName:userJson.user!.name!,urlPhoto:userJson.user!.photo==null?'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png':userJson.user!.photo!,);
-            },
-          ),
-        );
+      var userJson = createUserJson.fromJson(a);
+      print(userJson.user!.email!);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return CompleteProfile(displayName:userJson.user!.name!,urlPhoto:userJson.user!.photo==null?'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png':userJson.user!.photo!,);
+          },
+        ),
+      );
       /*}catch(e){
         
       }*/
@@ -767,8 +889,37 @@ bool loginUser= true;
 
       print(401);
     } else {
-    print(response.reasonPhrase);
+      print(response.reasonPhrase);
     }
+
+  }
+
+  void getUserDB() async{
+    var db=await PaLaCasaDB.instance.readAllSesion();
+    if(db.isNotEmpty){
+      SessionObject sessionObject =db.first;
+      print(sessionObject.phone);
+      if('${sessionObject.phone}'.length==10){
+        /*Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return PaLaCasaAppHomeScreen();
+            },
+          ),
+        );*/
+      }else{
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return CompleteProfile(displayName:sessionObject.name!,urlPhoto:sessionObject.photo==null?'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png':sessionObject.photo!,);
+            },
+          ),
+        );
+      }
+    }
+
 
   }
 }

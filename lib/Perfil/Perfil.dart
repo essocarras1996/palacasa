@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:palacasa/CustomInputFormatter.dart';
 import 'package:palacasa/Helper/color_constant.dart';
+import 'package:palacasa/database/PaLaCasaDB.dart';
+import 'package:palacasa/database/SessionObject.dart';
 
 import '../Helper/CalendatBirthday.dart';
 import '../PaLaCasaAppHomeScreen.dart';
@@ -30,12 +32,12 @@ class _PerfilState extends State<Perfil> {
   DateTime startDates = DateTime.now();
   DateTime endDates = DateTime.now().add(const Duration(days: 7));
   bool isEditing = true;
+  late SessionObject perfil;
+  bool isLoading= true;
 
   @override
   void initState() {
-    displayName="Ernesto Enrique Sanchez";
-    _controllerFirstName.text = displayName.split(" ").first;
-    _controllerLastName.text = displayName.replaceAll(_controllerFirstName.text+" ", "");
+    getDataDB();
     super.initState();
   }
 
@@ -46,7 +48,11 @@ class _PerfilState extends State<Perfil> {
 
     return Scaffold(
       backgroundColor: PaLaCasaAppTheme.background,
-      body: SafeArea(
+      body: isLoading?Center(
+        child: CircularProgressIndicator(
+          color: PaLaCasaAppTheme.Orange,
+        ),
+      ):SafeArea(
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(
               parent: AlwaysScrollableScrollPhysics()),
@@ -106,7 +112,7 @@ class _PerfilState extends State<Perfil> {
                               fit: BoxFit.cover,
                               height: 120,
                               width:120,
-                              imageUrl: 'https://lh3.googleusercontent.com/a-/AFdZucozA33lWxg69XFoQrslJynDk88u5N-7rrDKefay',
+                              imageUrl: perfil.photo,
                               placeholder: (context, url) => CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 maxRadius: 30,
@@ -125,7 +131,7 @@ class _PerfilState extends State<Perfil> {
               ),
               Center(child: Column(
                 children: [
-                  Text("Ernesto Enrique Sanchez Socarras",
+                  Text(perfil.name+" "+ perfil.lastname,
                     style: TextStyle(
                         fontFamily:PaLaCasaAppTheme.fontName,
                         color: PaLaCasaAppTheme.Gray,
@@ -133,7 +139,7 @@ class _PerfilState extends State<Perfil> {
                     ),
                     textAlign: TextAlign.left,
                   ),
-                  Text("sernestoenrique1996@gmail.com",
+                  Text(perfil.email,
                     style: TextStyle(
                         fontFamily:PaLaCasaAppTheme.fontNameRegular,
                         color: PaLaCasaAppTheme.Gray.withOpacity(0.5),
@@ -258,7 +264,7 @@ class _PerfilState extends State<Perfil> {
                               fit: BoxFit.cover,
                               height: 120,
                               width:120,
-                              imageUrl: 'https://lh3.googleusercontent.com/a-/AFdZucozA33lWxg69XFoQrslJynDk88u5N-7rrDKefay',
+                              imageUrl: perfil.photo,
                               placeholder: (context, url) => CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 maxRadius: 30,
@@ -630,14 +636,14 @@ class _PerfilState extends State<Perfil> {
                         flex: 1,
                         child: InkWell(
                           onTap: () async {
-                            Navigator.push(
+                           /* Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) {
                                   return PaLaCasaAppHomeScreen();
                                 },
                               ),
-                            );
+                            );*/
                           },
                           child: Container(
                             padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -693,5 +699,19 @@ class _PerfilState extends State<Perfil> {
         onCancelClick: () {},
       ),
     );
+  }
+
+  void getDataDB() async{
+    var sesion = await PaLaCasaDB.instance.readAllSesion();
+    perfil = sesion.first;
+    _controllerFirstName.text = perfil.name;
+    _controllerLastName.text = perfil.lastname;
+    _controllerBirthday.text = perfil.birthday;
+    valueSexo = perfil.gender;
+    _controllerPhone.text = perfil.phone;
+    isLoading= false;
+    setState(() {
+
+    });
   }
 }

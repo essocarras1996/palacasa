@@ -2,14 +2,14 @@ import 'User.dart';
 
 class createUserJson {
   User? user;
-  String? accessToken;
+  String? token;
   String? message;
 
-  createUserJson({this.user, this.accessToken, this.message});
+  createUserJson({this.user, this.token, this.message});
 
   createUserJson.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    accessToken = json['access_token'];
+    token = json['token'];
     message = json['message'];
   }
 
@@ -18,7 +18,7 @@ class createUserJson {
     if (this.user != null) {
       data['user'] = this.user!.toJson();
     }
-    data['access_token'] = this.accessToken;
+    data['token'] = this.token;
     data['message'] = this.message;
     return data;
   }

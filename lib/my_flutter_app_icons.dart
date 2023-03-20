@@ -20,6 +20,10 @@
 ///         Author:    Stephen Hutchings
 ///         License:   SIL (http://scripts.sil.org/OFL)
 ///         Homepage:  http://typicons.com/
+/// * Font Awesome 5, Copyright (C) 2016 by Dave Gandy
+///         Author:    Dave Gandy
+///         License:   SIL (https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt)
+///         Homepage:  http://fortawesome.github.com/Font-Awesome/
 ///
 import 'package:flutter/widgets.dart';
 
@@ -34,4 +38,17 @@ class MyFlutterApp {
   static const IconData user = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData home = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData location = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData tag = IconData(0xf02b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData book = IconData(0xf02d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData leaf = IconData(0xf06c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData fire = IconData(0xf06d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData cogs = IconData(0xf085, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData users = IconData(0xf0c0, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData store = IconData(0xf54e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData wallet = IconData(0xf555, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData drafting_compass = IconData(0xf568, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData feather_alt = IconData(0xf56b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData fingerprint = IconData(0xf577, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData map_marked_alt = IconData(0xf5a0, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData layer_group = IconData(0xf5fd, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

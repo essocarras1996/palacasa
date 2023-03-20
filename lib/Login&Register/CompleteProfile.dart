@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:palacasa/CustomInputFormatter.dart';
 import 'package:palacasa/Helper/color_constant.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:palacasa/database/PaLaCasaDB.dart';
+import 'package:palacasa/database/SessionObject.dart';
 import '../Helper/CalendatBirthday.dart';
 import '../PaLaCasaAppHomeScreen.dart';
 import '../my_flutter_app_icons.dart';
@@ -23,7 +28,6 @@ class _CompleteProfileState extends State<CompleteProfile> {
   late TextEditingController _controllerFirstName = new TextEditingController();
   late TextEditingController _controllerLastName= new TextEditingController();
   late TextEditingController _controllerBirthday= new TextEditingController();
-  late TextEditingController _controllerGender= new TextEditingController();
   late TextEditingController _controllerPhone= new TextEditingController();
   var sexoItems=['Sexo','Masculino','Femenino'];
   String valueSexo ='Sexo';
@@ -450,14 +454,13 @@ class _CompleteProfileState extends State<CompleteProfile> {
                       flex: 1,
                       child: InkWell(
                         onTap: () async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return PaLaCasaAppHomeScreen();
-                              },
-                            ),
-                          );
+                          String sexo = valueSexo;
+                          String firstName= _controllerFirstName.text;
+                          String lastName= _controllerLastName.text;
+                          String phone= _controllerPhone.text;
+                          String birthday= _controllerBirthday.text;
+                          completePerfil(firstName,lastName,phone, birthday, sexo);
+
                         },
                         child: Container(
                           padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -512,5 +515,59 @@ class _CompleteProfileState extends State<CompleteProfile> {
         onCancelClick: () {},
       ),
     );
+  }
+
+  completePerfil(String name,String lastname,String phone, String birthday, String gender) async {
+    print("Entro al request");
+    var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/perfil'));
+    var db = await PaLaCasaDB.instance.readAllSesion();
+    String token = db.first.token;
+    var headers = {
+      'Authorization': 'Bearer $token'
+    };
+    request.fields.addAll({
+      'name': name,
+      'lastname': lastname,
+      'phone': phone,
+      'birthday': birthday,
+      'gender': gender,
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    print("Mando el request");
+    if (response.statusCode == 200) {
+      var perfil = await PaLaCasaDB.instance.readAllSesion();
+      SessionObject session = perfil.first;
+      SessionObject session1 = new SessionObject(
+          id: session.id,
+          name: name,
+          lastname: lastname,
+          email: session.email,
+          phone: phone,
+          photo: session.photo,
+          id_role: session.id_role,
+          birthday: birthday,
+          gender: gender,
+          token: session.token
+      );
+      await PaLaCasaDB.instance.updateSession(session1);
+      /*Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return PaLaCasaAppHomeScreen();
+          },
+        ),
+      );*/
+
+    }else if (response.statusCode == 401){
+      Fluttertoast.showToast(msg: "Logout",backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+      print(401);
+    } else {
+      Fluttertoast.showToast(msg: "Ha ocurrido un error",backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+      print(response.reasonPhrase);
+    }
+
   }
 }
