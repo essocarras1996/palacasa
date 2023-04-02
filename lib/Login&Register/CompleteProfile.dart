@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:palacasa/CustomInputFormatter.dart';
 import 'package:palacasa/Helper/color_constant.dart';
 import 'package:http/http.dart' as http;
+import 'package:palacasa/HomePage.dart';
 import 'package:palacasa/database/PaLaCasaDB.dart';
 import 'package:palacasa/database/SessionObject.dart';
 import '../Helper/CalendatBirthday.dart';
@@ -552,14 +553,14 @@ class _CompleteProfileState extends State<CompleteProfile> {
           token: session.token
       );
       await PaLaCasaDB.instance.updateSession(session1);
-      /*Navigator.push(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return PaLaCasaAppHomeScreen();
+            return HomePage();
           },
         ),
-      );*/
+      );
 
     }else if (response.statusCode == 401){
       Fluttertoast.showToast(msg: "Logout",backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);

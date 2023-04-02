@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:palacasa/CustomInputFormatter.dart';
 import 'package:palacasa/Helper/color_constant.dart';
 import 'package:palacasa/database/PaLaCasaDB.dart';
 import 'package:palacasa/database/SessionObject.dart';
-
+import 'package:http/http.dart' as http;
 import '../Helper/CalendatBirthday.dart';
+import 'AddressUser.dart';
 import '../PaLaCasaAppHomeScreen.dart';
 import '../my_flutter_app_icons.dart';
 
@@ -34,6 +36,7 @@ class _PerfilState extends State<Perfil> {
   bool isEditing = true;
   late SessionObject perfil;
   bool isLoading= true;
+  bool setRequest = false;
 
   @override
   void initState() {
@@ -68,6 +71,7 @@ class _PerfilState extends State<Perfil> {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        getDataDB();
                         setState(() {
                           isEditing=!isEditing;
                         });
@@ -153,21 +157,33 @@ class _PerfilState extends State<Perfil> {
                 padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 30),
                 child: Column(
                   children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: PaLaCasaAppTheme.Orange,
-                        maxRadius: 25,
-                        child: Icon(Icons.location_on_rounded,color: Colors.white,),
-                      ),
-                      title: Text(
-                        "Direcciones",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: PaLaCasaAppTheme.Gray,fontSize: 16.0,),
-                        textAlign: TextAlign.left,
-                      ),
-                      subtitle: Text(
-                        "Añadir direcciones de entrega",
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray,fontSize: 12.0,),
-                        textAlign: TextAlign.left,
+                    GestureDetector(
+                      onTap: () {
+                         Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return AddressUser();
+                                },
+                              ),
+                            );
+                      },
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: PaLaCasaAppTheme.Orange,
+                          maxRadius: 25,
+                          child: Icon(Icons.location_on_rounded,color: Colors.white,),
+                        ),
+                        title: Text(
+                          "Direcciones",
+                          style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: PaLaCasaAppTheme.Gray,fontSize: 16.0,),
+                          textAlign: TextAlign.left,
+                        ),
+                        subtitle: Text(
+                          "Añadir direcciones de entrega",
+                          style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray,fontSize: 12.0,),
+                          textAlign: TextAlign.left,
+                        ),
                       ),
                     ),
                     ListTile(
@@ -632,18 +648,34 @@ class _PerfilState extends State<Perfil> {
 
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Expanded(
+                      setRequest?Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                      decoration: BoxDecoration(
+                          color: PaLaCasaAppTheme.Orange,
+                          borderRadius: BorderRadius.circular(35.0)
+                      ),
+                      child: Center(child: Container(
+                           width: 20,
+                           height: 20,
+                          child: CircularProgressIndicator(color: Colors.white,))),
+                    ),
+                  ): Expanded(
                         flex: 1,
                         child: InkWell(
                           onTap: () async {
-                           /* Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return PaLaCasaAppHomeScreen();
-                                },
-                              ),
-                            );*/
+                            String firstName = _controllerFirstName.text;
+                            String lastName = _controllerLastName.text;
+                            String phone = _controllerPhone.text;
+                            String birthday = _controllerBirthday.text;
+                            print(valueSexo);
+                            if(firstName.isEmpty||lastName.isEmpty||phone.isEmpty||birthday.isEmpty){
+                              Fluttertoast.showToast(msg: 'Rellene los espacios en blanco',backgroundColor: Colors.grey,gravity: ToastGravity.SNACKBAR);
+                            }else{
+                              editPerfil(firstName,lastName,phone, birthday, valueSexo);
+                            }
+
                           },
                           child: Container(
                             padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -712,6 +744,62 @@ class _PerfilState extends State<Perfil> {
     isLoading= false;
     setState(() {
 
+    });
+  }
+
+  editPerfil(String name,String lastname,String phone, String birthday, String gender) async {
+    setState(() {
+      setRequest = true;
+    });
+    var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/perfil'));
+    var db = await PaLaCasaDB.instance.readAllSesion();
+    String token = db.first.token;
+    var headers = {
+      'Authorization': 'Bearer $token'
+    };
+    request.fields.addAll({
+      'name': name,
+      'lastname': lastname,
+      'phone': phone,
+      'birthday': birthday,
+      'gender': gender,
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    print("Mando el request");
+    if (response.statusCode == 200) {
+      var p = await PaLaCasaDB.instance.readAllSesion();
+
+      SessionObject session = p.first;
+      perfil = p.first;
+      SessionObject session1 = new SessionObject(
+          id: session.id,
+          name: name,
+          lastname: lastname,
+          email: session.email,
+          phone: phone,
+          photo: session.photo,
+          id_role: session.id_role,
+          birthday: birthday,
+          gender: gender,
+          token: session.token
+      );
+      await PaLaCasaDB.instance.updateSession(session1);
+      getDataDB();
+      setState(() {
+
+      });
+
+    }else if (response.statusCode == 401){
+      Fluttertoast.showToast(msg: "Logout",backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+      print(401);
+    } else {
+      Fluttertoast.showToast(msg: "Ha ocurrido un error",backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
+      print(response.reasonPhrase);
+    }
+    setState(() {
+      setRequest = false;
     });
   }
 }

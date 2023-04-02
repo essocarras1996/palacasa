@@ -8,8 +8,8 @@ import '../../main.dart';
 import '../Helper/color_constant.dart';
 import '../models/tabIcon_data.dart';
 
-class BottomBarViewAdmin extends StatefulWidget {
-  const BottomBarViewAdmin(
+class BottomBarPanel extends StatefulWidget {
+  const BottomBarPanel(
       {Key? key, this.tabIconsList, this.changeIndex, this.addClick,this.addLongClick,this.iconData})
       : super(key: key);
 
@@ -19,10 +19,10 @@ class BottomBarViewAdmin extends StatefulWidget {
   final List<TabIconData>? tabIconsList;
   final IconData? iconData;
   @override
-  _BottomBarViewAdminState createState() => _BottomBarViewAdminState();
+  _BottomBarPanelState createState() => _BottomBarPanelState();
 }
 
-class _BottomBarViewAdminState extends State<BottomBarViewAdmin>
+class _BottomBarPanelState extends State<BottomBarPanel>
     with TickerProviderStateMixin {
   AnimationController? animationController;
 

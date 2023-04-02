@@ -7,6 +7,10 @@ List<Map> drawerItemAdmin=[
     'title':'Administración',
   },
   {
+    'icon':"assets/icons/game.svg",
+    'title':'Panel',
+  },
+  {
     'icon':"assets/icons/fastfood.svg",
     'title':'Cafeterías',
   },

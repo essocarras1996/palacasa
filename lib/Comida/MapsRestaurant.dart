@@ -10,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import '../Helper/color_constant.dart';
 import '../my_flutter_app_icons.dart';
 
@@ -38,7 +37,6 @@ class _MapsRestaurantState extends State<MapsRestaurant> {
   late LatLng currentLocation;
   late LatLng destinationLocation;
   double pinPillinPosition = PIN_INVISIBLE_POSITION;
-
   @override
   void initState() {
    // this.setInitialLocation();
@@ -448,4 +446,6 @@ class _MapsRestaurantState extends State<MapsRestaurant> {
   }
 
 
-}
+
+
+      }

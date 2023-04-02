@@ -9,8 +9,10 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:palacasa/database/PaLaCasaDB.dart';
 import 'package:palacasa/database/SessionObject.dart';
 import 'package:palacasa/jsons/CreateUserJson.dart';
+import 'package:flutter_svg/svg.dart';
 import '../Helper/color_constant.dart';
 import 'package:palacasa/my_flutter_app_icons.dart';
+import '../HomePage.dart';
 import 'CompleteProfile.dart';
 import 'GoogleSignInApi.dart';
 import 'package:http/http.dart' as http;
@@ -61,38 +63,9 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30,bottom: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: PaLaCasaAppTheme.Orange.withOpacity(0.2)
-                                .withOpacity(0.5),
-                            offset: Offset(3.0, 5),
-                            blurRadius: 15.0),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child:CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          height: 80,
-                          width:80,
-                          imageUrl: 'https://play-lh.googleusercontent.com/ukx-YgnZIsDgIX6s__8Ont11r5OzMvBNGS8PwO_NUR0FmXNSPkYoCm8DCncjaXbSPw',
-                          placeholder: (context, url) => CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            maxRadius: 30,
-                            child: CircularProgressIndicator(
-                              color: PaLaCasaAppTheme.grey,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => new Icon(Icons.image_not_supported_outlined,color: PaLaCasaAppTheme.grey,)
-                      ),
-
-                    ),
-                  ),
+                child: Image.asset('assets/fitness_app/logo.png',
+                  width: 150,
+                  height: 150,
                 ),
               ),
               Center(
@@ -438,38 +411,9 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 30,bottom: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: PaLaCasaAppTheme.Orange.withOpacity(0.2)
-                                .withOpacity(0.5),
-                            offset: Offset(3.0, 5),
-                            blurRadius: 15.0),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child:CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          height: 80,
-                          width:80,
-                          imageUrl: 'https://play-lh.googleusercontent.com/ukx-YgnZIsDgIX6s__8Ont11r5OzMvBNGS8PwO_NUR0FmXNSPkYoCm8DCncjaXbSPw',
-                          placeholder: (context, url) => CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            maxRadius: 30,
-                            child: CircularProgressIndicator(
-                              color: PaLaCasaAppTheme.grey,
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => new Icon(Icons.image_not_supported_outlined,color: PaLaCasaAppTheme.grey,)
-                      ),
-
-                    ),
-                  ),
+                child: Image.asset('assets/fitness_app/logo.png',
+                  width: 150,
+                  height: 150,
                 ),
               ),
               Center(
@@ -806,22 +750,24 @@ try{
       await PaLaCasaDB.instance.createSession(session);
 
       if('${userJson.user!.phone}'.length==10){
-        /*Navigator.push(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
             builder: (context) {
-              return PaLaCasaAppHomeScreen();
+              return HomePage();
             },
           ),
-        );*/
+              (route) => false,
+        );
       }else{
-        Navigator.push(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
             builder: (context) {
               return CompleteProfile(displayName:userJson.user!.name!,urlPhoto:userJson.user!.photo==null?'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png':userJson.user!.photo!,);
             },
           ),
+              (route) => false,
         );
       }
 
@@ -870,13 +816,15 @@ try{
       var a = json.decode(d);
       var userJson = createUserJson.fromJson(a);
       print(userJson.user!.email!);
-      Navigator.push(
+
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (context) {
             return CompleteProfile(displayName:userJson.user!.name!,urlPhoto:userJson.user!.photo==null?'https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-PNG-Photos.png':userJson.user!.photo!,);
           },
         ),
+            (route) => false,
       );
       /*}catch(e){
         

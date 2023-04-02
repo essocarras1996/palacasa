@@ -33,17 +33,23 @@ class MyFlutterApp {
   static const _kFontFam = 'MyFlutterApp';
   static const String? _kFontPkg = null;
 
-  static const IconData heart_empty = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData heart = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData user = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData home = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData location = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData heart = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData heart_empty = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData home = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData location = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user = IconData(0xf007, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData clock = IconData(0xf017, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData tag = IconData(0xf02b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData book = IconData(0xf02d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData leaf = IconData(0xf06c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData fire = IconData(0xf06d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData cogs = IconData(0xf085, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData users = IconData(0xf0c0, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData instagram = IconData(0xf16d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData gwallet = IconData(0xf1ee, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData whatsapp = IconData(0xf232, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData user_friends = IconData(0xf500, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData users_cog = IconData(0xf509, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData store = IconData(0xf54e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData wallet = IconData(0xf555, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData drafting_compass = IconData(0xf568, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -51,4 +57,5 @@ class MyFlutterApp {
   static const IconData fingerprint = IconData(0xf577, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData map_marked_alt = IconData(0xf5a0, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData layer_group = IconData(0xf5fd, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+
 }

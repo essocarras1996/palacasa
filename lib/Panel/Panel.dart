@@ -13,26 +13,28 @@ import 'package:palacasa/bottom_navigation_view/bottom_bar_viewad.dart';
 import 'package:http/http.dart' as http;
 import 'package:palacasa/jsons/CreateUserJson.dart';
 import 'package:palacasa/jsons/categoriesJson.dart';
-import 'package:palacasa/jsons/businessAdminJson.dart';
+import 'package:palacasa/jsons/jsonPanelCafeteria.dart';
 import 'package:shimmer/shimmer.dart';
 import '../Helper/color_constant.dart';
 import '../Helper/search_form.dart';
-import '../bottom_navigation_view/bottom_bar_view.dart';
+import '../bottom_navigation_view/bottom_bar_panel.dart';
 import '../database/PaLaCasaDB.dart';
 
 import '../models/tabIcon_data.dart';
 import 'package:image_picker/image_picker.dart';
-import 'Categorias/Estadisticas.dart';
 
-class AdministratorScreen extends StatefulWidget {
+import 'CafeteriaPanel.dart';
+
+
+class PanelScreen extends StatefulWidget {
   final VoidCallback menuCallBack;
-  const AdministratorScreen({Key? key, required this.menuCallBack}) : super(key: key);
+  const PanelScreen({Key? key, required this.menuCallBack}) : super(key: key);
 
   @override
-  State<AdministratorScreen> createState() => _AdministratorScreenState();
+  State<PanelScreen> createState() => _PanelScreenState();
 }
 
-class _AdministratorScreenState extends State<AdministratorScreen> with TickerProviderStateMixin{
+class _PanelScreenState extends State<PanelScreen> with TickerProviderStateMixin{
   AnimationController? animationController;
   List<TabIconData> tabIconsList = TabIconData.tabIconsListAdmin;
   List<TypeBusiness>_listBusiness=[];
@@ -50,8 +52,9 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
   var _controllerNegocio = new TextEditingController();
   var _controllerCategoria = new TextEditingController();
   var _controllerImagen = TextEditingController();
+  int itemsSelect = 0;
   int selectIndex=0;
-  List<Data> _listCafeterias=[];
+  List<Cafeterias> _listCafeterias=[];
 
   @override
   void initState() {
@@ -62,7 +65,7 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
 
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
-    getCafeterias();
+    getPanel();
 
     super.initState();
   }
@@ -109,19 +112,95 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
                         baseColor: PaLaCasaAppTheme.grey.withOpacity(0.2),
                         highlightColor: PaLaCasaAppTheme.grey.withOpacity(0.1),
                         enabled: setRequest,
-                        child: Form(
-                          child: Container(
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                            ),
+                        child: Container(
+                          height: 60,
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 10,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: PaLaCasaAppTheme.background.withOpacity(0.3),
+                                      borderRadius: BorderRadius.circular(18.0),
+                                      border: Border.all(color:PaLaCasaAppTheme.Gray.withOpacity(0.2),),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color:PaLaCasaAppTheme.Gray.withOpacity(0.2),
+                                            offset: Offset(5.0, 5.0),
+                                            blurRadius: 8.0
+                                        )
+                                      ]
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 15,right: 15.0,left: 15.0,bottom: 15),
+                                    child: Container(
+                                      width: 60.0,
+                                      height: 1.0,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15)
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
-                    ):Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5.0,horizontal: 16),
-                      child: SearchForm(name: 'Nombre',onSearch: _onSearch),
+                    ):Container(
+                      height: 60,
+                      child: ListView.builder(
+                        physics: BouncingScrollPhysics(
+                            parent: AlwaysScrollableScrollPhysics()),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _listBusiness.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                itemsSelect=index;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10,right: 10,top: 5,bottom: 10),
+                              child: Container(
+
+                                decoration: BoxDecoration(
+                                    color: PaLaCasaAppTheme.background,
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    border: Border.all(color: itemsSelect==index
+                                        ?PaLaCasaAppTheme.Orange.withOpacity(0.2)
+                                        :PaLaCasaAppTheme.Gray.withOpacity(0.2),),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: itemsSelect==index
+                                              ?PaLaCasaAppTheme.Orange.withOpacity(0.2)
+                                              :PaLaCasaAppTheme.Gray.withOpacity(0.2),
+                                          offset: Offset(5.0, 5.0),
+                                          blurRadius: 8.0
+                                      )
+                                    ]
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 12,right: 15.0,left: 15.0),
+                                  child: Text(_listBusiness[index].name!,
+                                    style: TextStyle(
+                                        fontFamily: PaLaCasaAppTheme.fontName,
+                                        fontSize: 12,
+                                        color: itemsSelect==index
+                                            ?PaLaCasaAppTheme.Orange.withOpacity(0.5)
+                                            :PaLaCasaAppTheme.Gray.withOpacity(0.5)
+                                    ),),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                     setRequest?Container(
                       height: MediaQuery.of(context).size.height*0.70,
@@ -309,11 +388,14 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: (){
-                              Navigator.push(context,  MaterialPageRoute(
-                                builder: (context) {
-                                  return AsignarNegocio(cafeteria: _listCafeterias[index]);
-                                },
-                              ),);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return CafeteriaPanel(cafeteria: _listCafeterias[index]);
+                                  },
+                                ),
+                              );
                             },
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width,
@@ -551,32 +633,11 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              GestureDetector(
-                                onTap: () => setState(() {
-                                  selectIndex=0;
-                                }),
-                                child: Text('Negocios',
-                                  style: TextStyle(
-                                      fontFamily: selectIndex==0?PaLaCasaAppTheme.fontName:PaLaCasaAppTheme.fontNameRegular,
-                                      color: PaLaCasaAppTheme.Gray,
-                                      fontSize: 16
-                                  ),
-                                ),
-                              ),
-                              VerticalDivider(
-                                color: PaLaCasaAppTheme.Gray,
-                                thickness: 1.5,
-                              ),
-                              GestureDetector(
-                                onTap: () => setState(() {
-                                  selectIndex=1;
-                                }),
-                                child: Text('Categorías',
-                                  style: TextStyle(
-                                      fontFamily: selectIndex==1?PaLaCasaAppTheme.fontName:PaLaCasaAppTheme.fontNameRegular,
-                                      color: PaLaCasaAppTheme.Gray,
-                                      fontSize: 16
-                                  ),
+                              Text('Categorías',
+                                style: TextStyle(
+                                    fontFamily: PaLaCasaAppTheme.fontName,
+                                    color: PaLaCasaAppTheme.Gray,
+                                    fontSize: 16
                                 ),
                               ),
                             ],
@@ -669,9 +730,7 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        _controllerNegocio.clear();
-                                        _controllerNegocio.text= _listBusiness[index].name!;
-                                        _showDialogEditNegocio(context, _listBusiness[index].id!.toString());
+
                                       },
                                       child: CircleAvatar(
                                           backgroundColor: Colors.green,
@@ -730,13 +789,7 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        value = items.first;
-                                        _controllerCategoria.text=_listCategorias[index].name!;
-                                        value = getNameTypeBusiness(_listCategorias[index].idType!);
-                                        setState(() {
 
-                                        });
-                                        _showDialogEditCategories(context, _listCategorias[index].id.toString());
                                       },
                                       child: CircleAvatar(
                                           backgroundColor: Colors.green,
@@ -767,8 +820,8 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
                     ],
                   ),
                 ):Center(),
-                showPerfil?Estadisticas(menuCallBack: widget.menuCallBack,):Center(),
-                favorite?Usuarios(menuCallBack: widget.menuCallBack,):Center(),
+
+
                 bottomBar(),
               ],
             );
@@ -778,89 +831,6 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
     );
   }
 
-  /*Widget bottomBar() {
-    return Column(
-      children: <Widget>[
-        const Expanded(
-          child: SizedBox(),
-        ),
-        BottomBarViewAdmin(
-          iconData: icon,
-          tabIconsList: tabIconsList,
-          addClick: () {
-            if(showCategoria){
-              if(selectIndex==1){
-                _showDialogCategories(context);
-              }else{
-                _showDialogNegocio(context);
-              }
-            }
-
-            if(showStore){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return addNegocio(listBusiness: _listBusiness);
-                  },
-                ),
-              );
-            }
-
-          },
-          changeIndex: (int index) {
-            if (index == 0 ) {
-              animationController?.reverse().then<dynamic>((data) {
-
-                icon = Icons.add;
-                showPerfil=false;
-                favorite=false;
-                showCategoria=false;
-                showStore=true;
-                getCafeterias();
-                setState(() {
-
-                });
-              });
-            } else if (index == 1) {
-              animationController?.reverse().then<dynamic>((data) {
-
-                getTypeBusiness();
-                icon = Icons.add;
-                showPerfil=false;
-                favorite=false;
-                showCategoria=true;
-                showStore=false;
-                setState(() {
-
-                });
-              });
-            } else if (index == 2) {
-              icon = Icons.search;
-              showPerfil=false;
-              showCategoria=false;
-              favorite=true;
-              showStore=false;
-              setState(() {
-
-              });
-            }else{
-              icon = Icons.paste;
-              showPerfil=true;
-              showCategoria=false;
-              favorite=false;
-              showStore=false;
-
-              setState(() {
-
-              });
-
-            }
-          },
-        ),
-      ],
-    );
-  }*/
 
   Widget bottomBar() {
     return Column(
@@ -868,27 +838,11 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
         const Expanded(
           child: SizedBox(),
         ),
-        BottomBarViewAdmin(
+        BottomBarPanel(
           iconData: icon,
           tabIconsList: tabIconsList,
           addClick: () {
-             if(showCategoria){
-              if(selectIndex==0){
-                _showDialogNegocio(context);
-              }else{
-                _showDialogCategories(context);
-              }
-            }
-             else if(showStore){
-               Navigator.push(
-                 context,
-                 MaterialPageRoute(
-                   builder: (context) {
-                     return addNegocio(listBusiness: _listBusiness);
-                   },
-                 ),
-               );
-             }
+
           },
           changeIndex: (int index) {
             if (index == 0 ) {
@@ -913,7 +867,6 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
                 showPerfil=false;
                 showCategoria=true;
                 favorite=false;
-                getTypeBusiness();
                 setState(() {
 
                 });
@@ -948,570 +901,7 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
     return true;
   }
 
-  _showDialogNegocio(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: PaLaCasaAppTheme.background,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Tipo de Negocio",
-                        style: TextStyle(
-                            fontFamily: PaLaCasaAppTheme.fontName,
-                            color: PaLaCasaAppTheme.Gray,fontSize: 16.0),
-                        textAlign: TextAlign.justify,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Divider(
-                    color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
-                    height: 4.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 45),
-                    child: TextFormField(
-                      style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
-                      cursorColor: PaLaCasaAppTheme.Orange,
-                      controller: _controllerNegocio,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          borderSide: BorderSide(
-                            color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          borderSide: BorderSide(
-                            color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
-                            width: 1.0,
-                          ),
-                        ),
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        focusedErrorBorder: InputBorder.none,
-                        border: InputBorder.none,
-                        hintText: 'Nombre',
-                        hintStyle: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,color: PaLaCasaAppTheme.Gray.withOpacity(0.4),fontSize: 14),
 
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Row(
-
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: InkWell(
-                          onTap: () async {
-                            String name = _controllerNegocio.text;
-                            if(name.isNotEmpty) {
-                              addTypeBusiness(name,context);
-                              _controllerNegocio.clear();
-                            } else
-                              Fluttertoast.showToast(msg: "Rellene los espacios en blanco",backgroundColor: Colors.grey,gravity: ToastGravity.BOTTOM);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                            decoration: BoxDecoration(
-                              color: PaLaCasaAppTheme.Orange,
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(32.0),
-                                  bottomLeft: Radius.circular(32.0)),
-                            ),
-                            child: Text(
-                              "Crear".toUpperCase(),
-                              style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0,),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  _showDialogEditNegocio(BuildContext context, String id) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: PaLaCasaAppTheme.background,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "Editar de Negocio",
-                        style: TextStyle(
-                            fontFamily: PaLaCasaAppTheme.fontName,
-                            color: PaLaCasaAppTheme.Gray,fontSize: 16.0),
-                        textAlign: TextAlign.justify,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Divider(
-                    color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
-                    height: 4.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 45),
-                    child: TextFormField(
-                      style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
-                      cursorColor: PaLaCasaAppTheme.Orange,
-                      controller: _controllerNegocio,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          borderSide: BorderSide(
-                            color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          borderSide: BorderSide(
-                            color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
-                            width: 1.0,
-                          ),
-                        ),
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        focusedErrorBorder: InputBorder.none,
-                        border: InputBorder.none,
-                        hintText: 'Nombre',
-                        hintStyle: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,color: PaLaCasaAppTheme.Gray.withOpacity(0.4),fontSize: 14),
-
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Row(
-
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: InkWell(
-                          onTap: () async {
-                            String name = _controllerNegocio.text;
-                            if(name.isNotEmpty) {
-                              editTypeBusiness(id,name);
-                            } else
-                              Fluttertoast.showToast(msg: "Rellene los espacios en blanco",backgroundColor: Colors.grey,gravity: ToastGravity.BOTTOM);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                            decoration: BoxDecoration(
-                              color: PaLaCasaAppTheme.Orange,
-                              borderRadius: BorderRadius.only(
-                                  bottomRight: Radius.circular(32.0),
-                                  bottomLeft: Radius.circular(32.0)),
-                            ),
-                            child: Text(
-                              "Modificar".toUpperCase(),
-                              style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0,),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  _showDialogCategories(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder:(context)
-      => StatefulBuilder(
-          builder: (context, _setter)  {
-            return AlertDialog(
-              backgroundColor: PaLaCasaAppTheme.background,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Añadir Categoría",
-                          style: TextStyle(
-                              fontFamily: PaLaCasaAppTheme.fontName,
-                              color: PaLaCasaAppTheme.Gray,fontSize: 16.0),
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Divider(
-                      color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
-                      height: 4.0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20,left: 20,top: 15,bottom: 10),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            border: Border.all(color:PaLaCasaAppTheme.Gray.withOpacity(0.1),width: 1.0 )
-
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 12.0,left: 12.0,top: 2.5,bottom: 2.5),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                              icon: Icon(Icons.arrow_drop_down,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
-                              value: value,
-                              style: TextStyle(color: Colors.black38, fontSize: 18,),
-                              underline: Container(
-                                height: 1,
-                                color: PaLaCasaAppTheme.Gray.withOpacity(0.5),
-                              ),
-                              items: items.map(buildMenuItem).toList(),
-                              onChanged: (value) =>setState(() {
-                                _setter(
-                                      () {
-                                    this.value = value!;
-                                  },
-                                );
-                                _changeGrade(value);
-                              }),
-
-                            ),
-                          ),
-                        ),
-
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical:0),
-                      child: TextFormField(
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
-                        cursorColor: PaLaCasaAppTheme.Orange,
-                        controller: _controllerCategoria,
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            borderSide: BorderSide(
-                              color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            borderSide: BorderSide(
-                              color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
-                              width: 1.0,
-                            ),
-                          ),
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          focusedErrorBorder: InputBorder.none,
-                          border: InputBorder.none,
-                          hintText: 'Nombre',
-                          hintStyle: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,color: PaLaCasaAppTheme.Gray.withOpacity(0.4),fontSize: 14),
-
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap:(){
-                        _getFromGallery();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                        child: TextFormField(
-                          style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
-                          cursorColor: PaLaCasaAppTheme.Orange,
-                          enabled: false,
-                          controller: _controllerImagen,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              borderSide: BorderSide(
-                                color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              borderSide: BorderSide(
-                                color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
-                                width: 1.0,
-                              ),
-                            ),
-                            errorBorder: InputBorder.none,
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              borderSide: BorderSide(
-                                color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
-                                width: 1.0,
-                              ),
-                            ),
-                            focusedErrorBorder: InputBorder.none,
-                            border: InputBorder.none,
-                            hintText: 'Imagen',
-                            hintStyle: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,color: PaLaCasaAppTheme.Gray.withOpacity(0.4),fontSize: 14),
-
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Row(
-
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            onTap: () async {
-                              String name = _controllerCategoria.text;
-                              String pathI = _controllerImagen.text;
-                              String negocioID = getIdBusiness(value);
-
-                              if(name.isEmpty||pathI.isEmpty){
-                                Fluttertoast.showToast(msg: "Rellene los espacios en blanco",backgroundColor: Colors.grey,gravity: ToastGravity.SNACKBAR);
-                              }else{
-                                value=="Negocio"
-                                    ?Fluttertoast.showToast(msg: "Seleccione un negocio",backgroundColor: Colors.grey,gravity: ToastGravity.SNACKBAR)
-                                    :addCategory(negocioID, name,);
-                              }
-
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                              decoration: BoxDecoration(
-                                color: PaLaCasaAppTheme.Orange,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(32.0),
-                                    bottomLeft: Radius.circular(32.0)),
-                              ),
-                              child: Text(
-                                "Crear".toUpperCase(),
-                                style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0,),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-
-
-    );
-  }
-
-  _showDialogEditCategories(BuildContext context,String id) {
-    return showDialog(
-      context: context,
-      builder:(context)
-      => StatefulBuilder(
-          builder: (context, _setter)  {
-            return AlertDialog(
-              backgroundColor: PaLaCasaAppTheme.background,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Modificar Categoría",
-                          style: TextStyle(
-                              fontFamily: PaLaCasaAppTheme.fontName,
-                              color: PaLaCasaAppTheme.Gray,fontSize: 16.0),
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Divider(
-                      color: PaLaCasaAppTheme.Gray.withOpacity(0.7),
-                      height: 4.0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20,left: 20,top: 15,bottom: 10),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15.0),
-                            border: Border.all(color:PaLaCasaAppTheme.Gray.withOpacity(0.1),width: 1.0 )
-
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 12.0,left: 12.0,top: 2.5,bottom: 2.5),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                              icon: Icon(Icons.arrow_drop_down,color: PaLaCasaAppTheme.Gray.withOpacity(0.5),),
-                              value: value,
-                              style: TextStyle(color: Colors.black38, fontSize: 18,),
-                              underline: Container(
-                                height: 1,
-                                color: PaLaCasaAppTheme.Gray.withOpacity(0.5),
-                              ),
-                              items: items.map(buildMenuItem).toList(),
-                              onChanged: (value) =>setState(() {
-                                _setter(
-                                      () {
-                                    this.value = value!;
-                                  },
-                                );
-                                _changeGrade(value);
-                              }),
-
-                            ),
-                          ),
-                        ),
-
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20,vertical:0),
-                      child: TextFormField(
-                        style: TextStyle(fontFamily: PaLaCasaAppTheme.fontNameRegular,color: PaLaCasaAppTheme.Gray.withOpacity(0.6),fontSize: 14),
-                        cursorColor: PaLaCasaAppTheme.Orange,
-                        controller: _controllerCategoria,
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            borderSide: BorderSide(
-                              color: PaLaCasaAppTheme.Gray.withOpacity(0.3),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            borderSide: BorderSide(
-                              color: PaLaCasaAppTheme.Gray.withOpacity(0.1),
-                              width: 1.0,
-                            ),
-                          ),
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          focusedErrorBorder: InputBorder.none,
-                          border: InputBorder.none,
-                          hintText: 'Nombre',
-                          hintStyle: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,color: PaLaCasaAppTheme.Gray.withOpacity(0.4),fontSize: 14),
-
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Row(
-
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            onTap: () async {
-                              String name = _controllerCategoria.text;
-                              String negocioID = getIdBusiness(value);
-
-                              if(name.isEmpty){
-                                Fluttertoast.showToast(msg: "Rellene los espacios en blanco",backgroundColor: Colors.grey,gravity: ToastGravity.SNACKBAR);
-                              }else{
-                                value=="Negocio"
-                                    ?Fluttertoast.showToast(msg: "Seleccione un negocio",backgroundColor: Colors.grey,gravity: ToastGravity.SNACKBAR)
-                                    :editCategory(id,negocioID, name,);
-                              }
-
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                              decoration: BoxDecoration(
-                                color: PaLaCasaAppTheme.Orange,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(32.0),
-                                    bottomLeft: Radius.circular(32.0)),
-                              ),
-                              child: Text(
-                                "Modificar".toUpperCase(),
-                                style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16.0,),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-
-
-    );
-  }
 
   void _changeGrade(_newGrade) {
     setState(
@@ -1532,262 +922,8 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
 
 
 
-  addTypeBusiness(String name,BuildContext context) async {
-
-    var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/business'));
-    request.fields.addAll({
-      'name': name
-    });
-    var db = await PaLaCasaDB.instance.readAllSesion();
-    String token = db.first.token;
-    var headers = {
-      'Authorization': 'Bearer $token'
-    };
-
-    request.headers.addAll(headers);
 
 
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      try {
-        String d =await response.stream.bytesToString();
-        var a = json.decode(d);
-        var userJson = createUserJson.fromJson(a);
-        Navigator.pop(context);
-        getTypeBusiness();
-        Fluttertoast.showToast(msg: userJson.message!,backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }catch(e){
-        Fluttertoast.showToast(msg: e.toString(),backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }
-
-    }else if (response.statusCode == 401){
-
-      print(401);
-    } else {
-      print(response.reasonPhrase);
-    }
-
-  }
-
-  editTypeBusiness(String id, String name) async {
-
-    var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/editTypeBusiness'));
-    request.fields.addAll({
-      'id': id,
-      'name': name,
-    });
-    var db = await PaLaCasaDB.instance.readAllSesion();
-    String token = db.first.token;
-    var headers = {
-      'Authorization': 'Bearer $token'
-    };
-
-    request.headers.addAll(headers);
-
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      try {
-        String d =await response.stream.bytesToString();
-        var a = json.decode(d);
-        var userJson = createUserJson.fromJson(a);
-        _controllerNegocio.clear();
-        Navigator.pop(context);
-        getTypeBusiness();
-        Fluttertoast.showToast(msg: userJson.message!,backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }catch(e){
-        Fluttertoast.showToast(msg: e.toString(),backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }
-
-    }else if (response.statusCode == 401){
-
-      print(401);
-    } else {
-      print(response.reasonPhrase);
-    }
-
-  }
-
-
-
-  addCategory(String id_type,String name) async {
-    print("Sdf");
-    var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/categories'))
-      ..fields['id_type'] = id_type
-      ..fields['name'] = name
-      ..files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-
-    var db = await PaLaCasaDB.instance.readAllSesion();
-    String token = db.first.token;
-    var headers = {
-      'Authorization': 'Bearer $token'
-    };
-
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      try {
-        String d =await response.stream.bytesToString();
-        var a = json.decode(d);
-        var userJson = createUserJson.fromJson(a);
-        getTypeBusiness();
-        Navigator.pop(context);
-        Fluttertoast.showToast(msg: userJson.message!,backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }catch(e){
-
-      }
-
-    }else if (response.statusCode == 401){
-
-      print(401);
-    } else {
-      print(response.reasonPhrase);
-    }
-
-  }
-
-  editCategory(String id,String id_type,String name) async {
-    var request = http.MultipartRequest('POST', Uri.parse('https://palacasa.whizzlyshop.com/api/editCategories'))
-      ..fields['id'] = id
-      ..fields['id_type'] = id_type
-      ..fields['name'] = name;
-
-    var db = await PaLaCasaDB.instance.readAllSesion();
-    String token = db.first.token;
-    var headers = {
-      'Authorization': 'Bearer $token'
-    };
-
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      try {
-        String d =await response.stream.bytesToString();
-        var a = json.decode(d);
-        var userJson = createUserJson.fromJson(a);
-        getTypeBusiness();
-        Navigator.pop(context);
-        Fluttertoast.showToast(msg: userJson.message!,backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }catch(e){
-
-      }
-
-    }else if (response.statusCode == 401){
-
-      print(401);
-    } else {
-      print(response.reasonPhrase);
-    }
-
-  }
-
-
-
-  _getFromGallery() async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        imageFile = File(pickedFile.path);
-        _controllerImagen.text=imageFile.absolute.path.replaceAll("/data/user/0/com.essocarras.palacasa/cache/", "");
-
-      });
-    }
-  }
-
-  getCategories() async {
-
-    var request = http.MultipartRequest('GET', Uri.parse('https://palacasa.whizzlyshop.com/api/categories'));
-
-    var db = await PaLaCasaDB.instance.readAllSesion();
-    String token = db.first.token;
-    var headers = {
-      'Authorization': 'Bearer $token'
-    };
-
-    request.headers.addAll(headers);
-
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      try {
-        String d =await response.stream.bytesToString();
-        var a = json.decode(d);
-        var categories = categoriesJson.fromJson(a);
-      }catch(e){
-        Fluttertoast.showToast(msg: e.toString(),backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }
-
-    }else if (response.statusCode == 401){
-
-      print(401);
-    } else {
-      print(response.reasonPhrase);
-    }
-
-  }
-
-  getTypeBusiness() async {
-    _listBusiness=[];
-    _listCategorias=[];
-    items=['Negocio'];
-    setRequest=true;
-    setState(() {
-
-    });
-    var request = http.MultipartRequest('GET', Uri.parse('https://palacasa.whizzlyshop.com/api/acategories'));
-
-    var db = await PaLaCasaDB.instance.readAllSesion();
-    String token = db.first.token;
-    var headers = {
-      'Authorization': 'Bearer $token'
-    };
-
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      try {
-        String d =await response.stream.bytesToString();
-        var a = json.decode(d);
-        var typeBusiness = businessAdminJson.fromJson(a);
-        _listBusiness.addAll(typeBusiness.typeBusiness!);
-        var categories = categoriesJson.fromJson(a);
-        _listCategorias.addAll(categories.categories!);
-        for(var n in _listBusiness){
-          items.add(n.name!);
-        }
-        setState(() {
-
-        });
-        setRequest=false;
-        setState(() {
-
-        });
-      }catch(e){
-        Fluttertoast.showToast(msg: e.toString(),backgroundColor: Colors.grey, gravity: ToastGravity.BOTTOM);
-      }
-
-    }else if (response.statusCode == 401){
-
-      print(401);
-    } else {
-      print(response.reasonPhrase);
-    }
-    setRequest=false;
-    setState(() {
-
-    });
-  }
 
   String getNameTypeBusiness(String s) {
     String name = "";
@@ -1809,13 +945,13 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
     return "";
   }
 
-  getCafeterias() async {
+  getPanel() async {
     _listCafeterias=[];
     setRequest =true;
     setState(() {
 
     });
-    var request = http.MultipartRequest('GET', Uri.parse('https://palacasa.whizzlyshop.com/api/acafeterias'));
+    var request = http.MultipartRequest('GET', Uri.parse('https://palacasa.whizzlyshop.com/api/panel'));
 
     var db = await PaLaCasaDB.instance.readAllSesion();
     String token = db.first.token;
@@ -1831,8 +967,8 @@ class _AdministratorScreenState extends State<AdministratorScreen> with TickerPr
       try {
         String d =await response.stream.bytesToString();
         var a = json.decode(d);
-        var cafeterias = businessAdminJson.fromJson(a);
-        _listCafeterias.addAll(cafeterias.cafeterias!.data!);
+        var cafeterias = jsonPanelCafeteria.fromJson(a);
+        _listCafeterias.addAll(cafeterias.cafeterias!);
         _listBusiness.clear();
         _listBusiness.addAll(cafeterias.typeBusiness!);
         setRequest=false;

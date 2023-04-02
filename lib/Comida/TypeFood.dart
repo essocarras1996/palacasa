@@ -74,7 +74,7 @@ class _TypeFoodState extends State<TypeFood> {
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 20.0,horizontal:25),
-              child: SearchForm(),
+              child: SearchForm(name: 'Buscar',onSearch: _onSearch,),
             ),
             Expanded(
               child: ListView.builder(
@@ -277,5 +277,12 @@ class _TypeFoodState extends State<TypeFood> {
         ),
       ),
     );
+  }
+  String _searchText = '';
+  void _onSearch(String text) {
+    setState(() {
+      _searchText = text;
+    });
+    print('Texto ingresado: $_searchText');
   }
 }

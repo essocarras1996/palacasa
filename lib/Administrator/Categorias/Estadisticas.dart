@@ -22,28 +22,28 @@ class _EstadisticasState extends State<Estadisticas> {
     return Scaffold(
       backgroundColor: PaLaCasaAppTheme.background,
       body: SafeArea(
-        child:
-        Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  child: ListTile(
-                    leading: IconButton(
-                      onPressed: widget.menuCallBack,
-                      icon: SvgPicture.asset("assets/icons/paragraph.svg",color: PaLaCasaAppTheme.deepGRAY),
-                    ),
-                    title: Text("Estadísticas",style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,fontSize: 18),),
-                  ),
-                )
-              ],
-            ),
+    child:
+    Column(
+    children: [
+    Row(
+        children: [
+        Container(
+        width: MediaQuery.of(context).size.width,
+    height: 50,
+    child: ListTile(
+    leading: IconButton(
+    onPressed: widget.menuCallBack,
+    icon: SvgPicture.asset("assets/icons/paragraph.svg",color: PaLaCasaAppTheme.deepGRAY),
+    ),
+    title: Text("Estadísticas",style: TextStyle(fontFamily: PaLaCasaAppTheme.fontName,fontWeight: FontWeight.bold,fontSize: 18),),
+    ),
+    )
+    ],
+    ),
 
-          ],
-        ),
-      ),
+    ],
+    ),
+    ),
     );
   }
 }

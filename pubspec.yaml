@@ -43,6 +43,11 @@ dependencies:
   fluttertoast: ^8.2.1
   url_launcher: ^6.0.9
   image_picker: ^0.8.4+10
+  shimmer: ^2.0.0
+  flutter_map: ^1.0.0
+  proj4dart: ^2.1.0
+  latlong2: ^0.8.1
+  day_night_time_picker: ^1.2.0+2
   flutter:
     sdk: flutter
 

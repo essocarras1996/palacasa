@@ -68,7 +68,9 @@ class _HiddenDrawerState extends State<HiddenDrawer> {
                  children: [
                    Text(
                      user.name+" "+user.lastname,
-                     style: TextStyle(fontFamily:PaLaCasaAppTheme.fontName,fontSize: 15, color: PaLaCasaAppTheme.grey),
+                     style: TextStyle(fontFamily:PaLaCasaAppTheme.fontName,fontSize: 12, color: PaLaCasaAppTheme.grey),
+                     overflow: TextOverflow.ellipsis,
+                     maxLines: 1,
                    ),
                    Text(
                      user.email,

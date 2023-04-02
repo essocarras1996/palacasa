@@ -1,21 +1,21 @@
-class categoriesJson {
-  List<Categories>? categories;
-  List<CafeteriasPopulares>? cafeteriasPopulares;
+class jsonPanelCafeteria {
+  List<Cafeterias>? cafeterias;
+  List<TypeBusiness>? typeBusiness;
   String? message;
 
-  categoriesJson({this.categories, this.cafeteriasPopulares, this.message});
+  jsonPanelCafeteria({this.cafeterias, this.typeBusiness, this.message});
 
-  categoriesJson.fromJson(Map<String, dynamic> json) {
-    if (json['categories'] != null) {
-      categories = <Categories>[];
-      json['categories'].forEach((v) {
-        categories!.add(new Categories.fromJson(v));
+  jsonPanelCafeteria.fromJson(Map<String, dynamic> json) {
+    if (json['cafeterias'] != null) {
+      cafeterias = <Cafeterias>[];
+      json['cafeterias'].forEach((v) {
+        cafeterias!.add(new Cafeterias.fromJson(v));
       });
     }
-    if (json['cafeterias_populares'] != null) {
-      cafeteriasPopulares = <CafeteriasPopulares>[];
-      json['cafeterias_populares'].forEach((v) {
-        cafeteriasPopulares!.add(new CafeteriasPopulares.fromJson(v));
+    if (json['typeBusiness'] != null) {
+      typeBusiness = <TypeBusiness>[];
+      json['typeBusiness'].forEach((v) {
+        typeBusiness!.add(new TypeBusiness.fromJson(v));
       });
     }
     message = json['message'];
@@ -23,57 +23,20 @@ class categoriesJson {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.categories != null) {
-      data['categories'] = this.categories!.map((v) => v.toJson()).toList();
+    if (this.cafeterias != null) {
+      data['cafeterias'] = this.cafeterias!.map((v) => v.toJson()).toList();
     }
-    if (this.cafeteriasPopulares != null) {
-      data['cafeterias_populares'] =
-          this.cafeteriasPopulares!.map((v) => v.toJson()).toList();
+    if (this.typeBusiness != null) {
+      data['typeBusiness'] = this.typeBusiness!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     return data;
   }
 }
 
-class Categories {
+class Cafeterias {
   int? id;
-  String? idType;
-  String? name;
-  String? image;
-  String? createdAt;
-  String? updatedAt;
-
-  Categories(
-      {this.id,
-        this.idType,
-        this.name,
-        this.image,
-        this.createdAt,
-        this.updatedAt});
-
-  Categories.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    idType = json['id_type'];
-    name = json['name'];
-    image = json['image'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['id_type'] = this.idType;
-    data['name'] = this.name;
-    data['image'] = this.image;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    return data;
-  }
-}
-
-class CafeteriasPopulares {
-  int? id;
+  int? idTypeBusiness;
   String? name;
   String? description;
   String? logo;
@@ -91,8 +54,9 @@ class CafeteriasPopulares {
   String? createdAt;
   String? updatedAt;
 
-  CafeteriasPopulares(
+  Cafeterias(
       {this.id,
+        this.idTypeBusiness,
         this.name,
         this.description,
         this.logo,
@@ -110,8 +74,9 @@ class CafeteriasPopulares {
         this.createdAt,
         this.updatedAt});
 
-  CafeteriasPopulares.fromJson(Map<String, dynamic> json) {
+  Cafeterias.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    idTypeBusiness = json['id_typeBusiness'];
     name = json['name'];
     description = json['description'];
     logo = json['logo'];
@@ -133,6 +98,7 @@ class CafeteriasPopulares {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
+    data['id_typeBusiness'] = this.idTypeBusiness;
     data['name'] = this.name;
     data['description'] = this.description;
     data['logo'] = this.logo;
@@ -147,6 +113,31 @@ class CafeteriasPopulares {
     data['facebook'] = this.facebook;
     data['instagram'] = this.instagram;
     data['whatsapp'] = this.whatsapp;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}
+
+class TypeBusiness {
+  int? id;
+  String? name;
+  String? createdAt;
+  String? updatedAt;
+
+  TypeBusiness({this.id, this.name, this.createdAt, this.updatedAt});
+
+  TypeBusiness.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;

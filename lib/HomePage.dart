@@ -6,6 +6,9 @@ import 'package:palacasa/HiddenDrawer/hidden_drawer.dart';
 import 'package:palacasa/PaLaCasaAppHomeScreen.dart';
 import 'package:palacasa/database/PaLaCasaDB.dart';
 
+import 'Panel/Panel.dart';
+
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -34,6 +37,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       Tween<double>(begin: 1.0, end: 0.6).animate(_animationController),
       Tween<double>(begin: 1.0, end: 0.5).animate(_animationController),
       Tween<double>(begin: 1.0, end: 0.4).animate(_animationController),
+      Tween<double>(begin: 1.0, end: 0.3).animate(_animationController),
     ];
 
     screenSnapshot = getScreen().toList();
@@ -52,25 +56,37 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     switch(id_role){
       case 1:{
         return [
-          AdministratorScreen(menuCallBack: (){
+         /*new AdministratorScreen(menuCallBack: (){
+            setState(() {
+              menuOpen = true;
+              _animationController.forward();
+            });
+          },),*/
+          new BaresScreen(menuCallBack: (){
             setState(() {
               menuOpen = true;
               _animationController.forward();
             });
           },),
-          PaLaCasaAppHomeScreen(menuCallBack: (){
+         new PanelScreen(menuCallBack: (){
             setState(() {
               menuOpen = true;
               _animationController.forward();
             });
           },),
-          BaresScreen(menuCallBack: (){
+         new PaLaCasaAppHomeScreen(menuCallBack: (){
             setState(() {
               menuOpen = true;
               _animationController.forward();
             });
           },),
-          PaLaCasaAppHomeScreen(menuCallBack: (){
+         new BaresScreen(menuCallBack: (){
+            setState(() {
+              menuOpen = true;
+              _animationController.forward();
+            });
+          },),
+         new BaresScreen(menuCallBack: (){
             setState(() {
               menuOpen = true;
               _animationController.forward();
@@ -109,7 +125,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       }
       case 3:{
         return [
-          PaLaCasaAppHomeScreen(menuCallBack: (){
+          new PanelScreen(menuCallBack: (){
             setState(() {
               menuOpen = true;
               _animationController.forward();
@@ -156,6 +172,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         child: GestureDetector(
           onTap: () {
             if (menuOpen) {
+
               setState(() {
                 menuOpen = false;
                 _animationController.reverse();
@@ -185,12 +202,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   List<Widget> finalStack() {
     List<Widget> stackToReturn = [];
-    stackToReturn.add(HiddenDrawer(
+    stackToReturn.add(
+        HiddenDrawer(
       menuCallBack: (selectedIndex) {
+
         setState(() {
+
           screenSnapshot = getScreen().toList();
           final selectedWidget = screenSnapshot.removeAt(selectedIndex);
           screenSnapshot.insert(0, selectedWidget);
+          menuOpen=false;
+          _animationController.reverse();
         });
       },
     ));
